@@ -29,11 +29,11 @@ public class SkinFixVisitor extends MethodVisitor {
         super.visitMethodInsn(opcode, owner, name, desc, itf);
         if(opcode == Opcodes.INVOKESPECIAL) {
             if ("(Lnet/minecraft/client/entity/AbstractClientPlayer;)V".equals(desc) || "(Lbet;)V".equals(desc)) {
-                System.out.println("[PortalFix] Found call to setModelVisibilities, hooking.");
+                System.out.println("[SkinBlendFix] Found call to setModelVisibilities, hooking.");
                 mv.visitMethodInsn(Opcodes.INVOKESTATIC, "dev/rocco/mods/skinblendfix/ASMAccess", "preBlend", "()V", false);
             }
             else if("func_76986_a".equals(name) || "a".equals(name)) {
-                System.out.println("[PortalFix] Found call to doRender, hooking.");
+                System.out.println("[SkinBlendFix] Found call to doRender, hooking.");
                 mv.visitMethodInsn(Opcodes.INVOKESTATIC, "dev/rocco/mods/skinblendfix/ASMAccess", "postBlend", "()V", false);
             }
         }
