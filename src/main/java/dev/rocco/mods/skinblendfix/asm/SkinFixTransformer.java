@@ -32,7 +32,24 @@ public class SkinFixTransformer implements IClassTransformer {
                     MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
                     if ("func_76986_a".equals(name) || ("a".equals(name) && "(Lbet;DDDFF)V".equals(desc))) {
                         System.out.println("[SkinBlendFix] Found doRender");
-                        return new SkinFixVisitor(mv);
+                        return new RenderPlayerVisitor(mv);
+                    }
+                    return mv;
+                }
+            };
+            reader.accept(visitor, 0);
+            return writer.toByteArray();
+        } else if("net.minecraft.client.renderer.tileentity.TileEntitySkullRenderer".equals(name) || "bhk".equals(name)) {
+            System.out.println("[SkinBlendFix] Found TileEntitySkullRenderer");
+            ClassReader reader = new ClassReader(basicClass);
+            ClassWriter writer = new ClassWriter(reader, ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
+            ClassVisitor visitor = new ClassVisitor(Opcodes.ASM5, writer) {
+                @Override
+                public MethodVisitor visitMethod(int access, String name, String desc, String signature, String[] exceptions) {
+                    MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions);
+                    if ("func_180543_a".equals(name) || "a".equals(name)) {
+                        System.out.println("[SkinBlendFix] Found renderSkull");
+                        return new TileEntitySkullRendererVisitor(mv);
                     }
                     return mv;
                 }

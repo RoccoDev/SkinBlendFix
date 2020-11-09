@@ -19,24 +19,23 @@ package dev.rocco.mods.skinblendfix.asm;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
-public class SkinFixVisitor extends MethodVisitor {
-    public SkinFixVisitor(MethodVisitor mv) {
+public class TileEntitySkullRendererVisitor extends MethodVisitor {
+    public TileEntitySkullRendererVisitor(MethodVisitor mv) {
         super(Opcodes.ASM5, mv);
     }
 
     @Override
     public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
-        super.visitMethodInsn(opcode, owner, name, desc, itf);
-        if(opcode == Opcodes.INVOKESPECIAL) {
-            if ("(Lnet/minecraft/client/entity/AbstractClientPlayer;)V".equals(desc) || "(Lbet;)V".equals(desc)) {
-                System.out.println("[SkinBlendFix] Found call to setModelVisibilities, hooking.");
+        if(opcode == Opcodes.INVOKESTATIC) {
+            if ("func_179141_d".equals(name) || ("bfl".equals(owner) && "d".equals(name))) { // GlStateManager.enableAlpha
+                System.out.println("[SkinBlendFix] Found call to enableAlpha, hooking.");
                 mv.visitMethodInsn(Opcodes.INVOKESTATIC, "dev/rocco/mods/skinblendfix/ASMAccess", "preBlend", "()V", false);
+                super.visitMethodInsn(opcode, owner, name, desc, itf);
+                return;
             }
-            else if("func_76986_a".equals(name) || "a".equals(name)) {
-                System.out.println("[SkinBlendFix] Found call to doRender, hooking.");
-                mv.visitMethodInsn(Opcodes.INVOKESTATIC, "dev/rocco/mods/skinblendfix/ASMAccess", "postBlend", "()V", false);
-            }
+            // We don't need postBlend here as it pops the matrix anyway
         }
+        super.visitMethodInsn(opcode, owner, name, desc, itf);
     }
 
     @Override
