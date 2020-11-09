@@ -21,6 +21,8 @@ import net.minecraft.client.renderer.GlStateManager;
 public class ASMAccess {
     public static void preBlend() {
         GlStateManager.enableBlend();
+        // SRC_ALPHA, ONE_MINUS_SRC_ALPHA, 1, 0
+        // Essentially "converts" the input alpha (which would be instead interpreted as 1.0) to a normal one.
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
     }
 
